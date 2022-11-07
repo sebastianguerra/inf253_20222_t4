@@ -60,9 +60,23 @@
   (umbral_cola_aux lista umbral tipo 0 '())
 )
 
-;;; (define (modsel_simple lista seleccion f)
-;;; ; Implementacion de la funcion
-;;; )
+
+(define (modsel_simple_aux lista seleccion f)
+  (if (null? lista)
+    '()
+    (if (null? seleccion)
+      lista
+      (if (eq? (car seleccion) 0)
+        (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f))
+        (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f))
+      )
+    )
+  )
+)
+(define (modsel_simple lista seleccion f)
+  (modsel_simple_aux lista (sort seleccion (lambda (x y) (<= x y))) f)
+)
+
 
 ;;; (define (modsel_cola lista seleccion f)
 ;;; ; Implementacion de la funcion
