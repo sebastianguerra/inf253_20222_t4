@@ -78,9 +78,23 @@
 )
 
 
-;;; (define (modsel_cola lista seleccion f)
-;;; ; Implementacion de la funcion
-;;; )
+(define (modsel_cola_aux lista seleccion f i acc)
+  (if (null? lista)
+    acc
+    (if (null? seleccion)
+      (concatenar acc lista)
+      (if (= (car seleccion) i)
+        (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (concatenar acc (list (f (car lista)))))
+        (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (concatenar acc (list    (car lista) )))
+      )
+    )
+  )
+)
+
+(define (modsel_cola lista seleccion f)
+; Implementacion de la funcion
+  (modsel_cola_aux lista (sort seleccion (lambda (x y) (<= x y))) f 0 '())
+)
 
 ;;; (define (estables lista umbral fM fm)
 ;;; ; Implementacion de la funcion
