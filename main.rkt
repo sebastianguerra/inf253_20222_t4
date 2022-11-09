@@ -1,6 +1,5 @@
 #lang scheme
-
-
+(define ns (make-base-namespace))
 
 (define (inverso_aux lista n i)
   (if (< i n)
@@ -28,6 +27,14 @@
 
 
 
+
+
+
+
+
+
+
+
 ;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
 ;; Si el tipo es 'M' retorna una lista con todas las posiciones de los elementos lista que sean mayores que umbral.
 ;; Si es 'm' retorna las posiciones de los que son menores.
@@ -50,9 +57,6 @@
     )
   )
 )
-
-
-
 
 
 (define (umbral_cola_aux lista umbral tipo index acc)
@@ -87,6 +91,15 @@
 
 
 
+
+
+
+
+
+
+
+
+
 (define (modsel_simple_aux lista seleccion f)
   (if (null? lista)
     '()
@@ -107,9 +120,6 @@
 (define (modsel_simple lista seleccion f)
   (modsel_simple_aux lista (sort seleccion (lambda (x y) (<= x y))) f)
 )
-
-
-
 
 
 (define (modsel_cola_aux lista seleccion f i acc)
@@ -136,6 +146,21 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (define (estables_aux lista umbral fn tipo)
   (length 
     (umbral_cola 
@@ -151,7 +176,6 @@
     )
   )
 )
-
 (define (estables lista umbral fM fm)
   (list 
     (estables_aux lista umbral fM #\M)
@@ -159,19 +183,51 @@
   )
 )
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 (define (query lista pos op params)
   (cond
     ((= op 1)
       (umbral_cola (list-ref lista pos) (list-ref params 0) (list-ref params 1))
     )
     ((= op 2)
-      (modsel_cola (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1)))
+      (modsel_cola (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1) ns))
     )
     ((= op 3)
-      (estables (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1)) (eval (list-ref params 2)))
+      (estables (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1) ns) (eval (list-ref params 2) ns))
     )
   )
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (display "\n")
 ;; 1. Inverso
