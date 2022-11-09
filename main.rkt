@@ -1,6 +1,8 @@
 #lang scheme
 (define ns (make-base-namespace))
 
+
+
 (define (inverso_aux lista n i)
   (if (< i n)
     (if (null? lista)
@@ -14,9 +16,9 @@
   )
 )
 ;; Recibe una lista de numeros y un numero, y retorna una lista con todos los
-;; numeros entre 0 y n ([0, N[) que no esten en la lista.
+;; numeros entre 0 y n ([0..N[) que no esten en la lista.
 ;;
-;; [0, N[ - L
+;; [0..N[ - L
 ;;
 ;; lista: Lista de numeros.
 ;; n: Numero que indica el superior.
