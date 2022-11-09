@@ -1,14 +1,5 @@
 #lang scheme
 
-(define (concatenar X Y)
-  (if (null? X)
-    Y
-    (cons (car X) (concatenar (cdr X) Y))
-  )
-)
-
-
-
 
 
 (define (inverso_aux lista n i)
@@ -45,14 +36,16 @@
 (define (umbral_simple lista umbral tipo)
   (if (null? lista) 
     '()
-    (if (eq? tipo #\M)
-      (if (> (car lista) umbral)
-        (cons 0 (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo)))
-        (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo))
-      )
-      (if (< (car lista) umbral)
-        (cons 0 (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo)))
-        (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo))
+    (let ((res (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo))))
+      (if (eq? tipo #\M)
+        (if (> (car lista) umbral)
+          (cons 0 res)
+          res
+        )
+        (if (< (car lista) umbral)
+          (cons 0 res)
+          res
+        )
       )
     )
   )
@@ -65,15 +58,19 @@
 (define (umbral_cola_aux lista umbral tipo index acc)
   (if (null? lista)
     acc
-    (if (eq? tipo #\M)
-      (if (> (car lista) umbral)
-        (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) (concatenar acc (list index)))
-        (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc)
-      )
-      (if (< (car lista) umbral)
-        (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) (concatenar acc (list index)))
-        (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc)
-      )
+    (let ((acc2
+        (if (eq? tipo #\M)
+          (if (> (car lista) umbral)
+            (append acc (list index))
+            acc
+          )
+          (if (< (car lista) umbral)
+            (append acc (list index))
+            acc
+          )
+        )
+      ))
+      (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2)
     )
   )
 )
@@ -119,10 +116,10 @@
   (if (null? lista)
     acc
     (if (null? seleccion)
-      (concatenar acc lista)
+      (append acc lista)
       (if (= (car seleccion) i)
-        (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (concatenar acc (list (f (car lista)))))
-        (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (concatenar acc (list    (car lista) )))
+        (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista)))))
+        (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) )))
       )
     )
   )
@@ -137,16 +134,18 @@
 )
 
 
-(define (interseccion l1 l2) 
-  (filter (lambda (e) (member e l2)) l1)
-)
-
 
 
 (define (estables_aux lista umbral fn tipo)
   (length 
     (umbral_cola 
-      (map fn (map (lambda (x) (list-ref lista x)) (umbral_cola lista umbral tipo))) 
+      (map 
+        fn 
+        (map 
+          (lambda (x) (list-ref lista x)) 
+          (umbral_cola lista umbral tipo)
+        )
+      ) 
       umbral 
       tipo
     )
@@ -177,7 +176,7 @@
 (display "\n")
 ;; 1. Inverso
 (display ">(inverso '(1 3 7) 10)\n")
-(display "( 0 2 4 5 6 8 9)\n")
+(display "(0 2 4 5 6 8 9)\n")
 (display (inverso '(1 3 7) 10))
 (display "\n")
 
