@@ -51,7 +51,7 @@
           (fn   (if (eq? tipo #\M) > <)));; >w<
       (if (fn (car lista) umbral)
           (cons 0 res)
-          res))
+          res))))
 
 
 (define (umbral_cola_aux lista umbral tipo index acc)
