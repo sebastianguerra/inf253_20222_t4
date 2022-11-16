@@ -54,6 +54,8 @@
           res))))
 
 
+
+
 (define (umbral_cola_aux lista umbral tipo index acc)
   (if (null? lista)
       acc
@@ -62,7 +64,6 @@
                         (append acc (list index))
                         acc)))
         (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2))))
-
 
 ;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
 ;; Si el tipo es 'M' retorna una lista con todas las posiciones de los elementos lista que sean mayores que umbral.
@@ -84,15 +85,17 @@
 
 
 
-
 (define (modsel_simple_aux lista seleccion f)
-  (if (null? lista)
-      '()
-      (if (null? seleccion)
-          lista
-          (if (eq? (car seleccion) 0)
-            (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f))
-            (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f))))))
+  (cond
+    ((null? lista) 
+      '())
+    ((null? seleccion) 
+      lista)
+    ((eq? (car seleccion) 0)
+      (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f)))
+    (else
+      (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f)))))
+
 
 ;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
 ;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
@@ -104,6 +107,7 @@
     lista 
     (sort seleccion (lambda (x y) (<= x y))) 
     f))
+
 
 
 (define (modsel_cola_aux lista seleccion f i acc)
