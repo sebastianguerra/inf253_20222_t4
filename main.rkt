@@ -10,19 +10,13 @@
 
 (define (inverso_aux lista n i)
   (cond
-    ( (>= i n) 
-      '()
-    )
-    ( (and 
-          (not (null? lista))
+    ((>= i n) 
+      '())
+    ((and (not (null? lista))
           (= i (car lista)))
-      (inverso_aux (cdr lista) n (+ i 1))
-    )
-    ( else 
-      (cons i (inverso_aux lista n (+ i 1)))
-    )
-  )
-)
+      (inverso_aux (cdr lista) n (+ i 1)))
+    (else 
+      (cons i (inverso_aux lista n (+ i 1))))))
 
 ;; Recibe una lista de numeros y un numero, y retorna una lista con todos los
 ;; numeros entre 0 y n ([0..N[) que no esten en la lista.
@@ -32,8 +26,7 @@
 ;; lista: Lista de numeros.
 ;; n: Numero que indica el superior.
 (define (inverso lista n)
-  (inverso_aux lista n 0)
-)
+  (inverso_aux lista n 0))
 
 
 
@@ -57,18 +50,18 @@
     (let ((res  (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo)))
           (fn   (if (eq? tipo #\M) > <)));; >w<
       (if (fn (car lista) umbral)
-        (cons 0 res)
-        res))
+          (cons 0 res)
+          res))
 
 
 (define (umbral_cola_aux lista umbral tipo index acc)
   (if (null? lista)
-    acc
-    (let* ((fn  (if (eq? tipo #\M) > <))
-           (acc2 (if (fn (car lista) umbral)
-                    (append acc (list index))
-                    acc)))
-      (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2))))
+      acc
+      (let* ((fn    (if (eq? tipo #\M) > <))
+             (acc2  (if (fn (car lista) umbral)
+                        (append acc (list index))
+                        acc)))
+        (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2))))
 
 
 ;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
@@ -77,8 +70,7 @@
 ;;
 ;; Esta funcion lo implementa usando recursion de cola.
 (define (umbral_cola lista umbral tipo)
-  (umbral_cola_aux lista umbral tipo 0 '())
-)
+  (umbral_cola_aux lista umbral tipo 0 '()))
 
 
 
@@ -95,46 +87,45 @@
 
 (define (modsel_simple_aux lista seleccion f)
   (if (null? lista)
-    '()
-    (if (null? seleccion)
-      lista
-      (if (eq? (car seleccion) 0)
-        (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f))
-        (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f))
-      )
-    )
-  )
-)
+      '()
+      (if (null? seleccion)
+          lista
+          (if (eq? (car seleccion) 0)
+            (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f))
+            (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f))))))
+
 ;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
 ;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
 ;; debe aplicar la funcion f, en caso contrario el numero se matiene igual.
 ;;
 ;;Esta funcion lo implementa usando recursion simple.
 (define (modsel_simple lista seleccion f)
-  (modsel_simple_aux lista (sort seleccion (lambda (x y) (<= x y))) f)
-)
+  (modsel_simple_aux 
+    lista 
+    (sort seleccion (lambda (x y) (<= x y))) 
+    f))
 
 
 (define (modsel_cola_aux lista seleccion f i acc)
   (if (null? lista)
-    acc
-    (if (null? seleccion)
-      (append acc lista)
-      (if (= (car seleccion) i)
-        (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista)))))
-        (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) )))
-      )
-    )
-  )
-)
+      acc
+      (if (null? seleccion)
+          (append acc lista)
+          (if (= (car seleccion) i)
+              (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista)))))
+              (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) )))))))
 ;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
 ;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
 ;; debe aplicar la funcion f, en caso contrario el numero se matiene igual.
 ;;
 ;;Esta funcion lo implementa usando recursion de cola.
 (define (modsel_cola lista seleccion f)
-  (modsel_cola_aux lista (sort seleccion (lambda (x y) (<= x y))) f 0 '())
-)
+  (modsel_cola_aux 
+    lista 
+    (sort seleccion (lambda (x y) (<= x y))) 
+    f 
+    0 
+    '()))
 
 
 
@@ -155,26 +146,16 @@
 
 
 (define (estables_aux lista umbral fn tipo)
-  (length 
-    (umbral_cola 
-      (map 
-        fn 
-        (map 
-          (lambda (x) (list-ref lista x)) 
-          (umbral_cola lista umbral tipo)
-        )
-      ) 
-      umbral 
-      tipo
-    )
-  )
-)
+  (length (umbral_cola 
+            (map fn 
+                (map (lambda (x) (list-ref lista x)) 
+                      (umbral_cola lista umbral tipo))) 
+            umbral 
+            tipo)))
+
 (define (estables lista umbral fM fm)
-  (list 
-    (estables_aux lista umbral fM #\M)
-    (estables_aux lista umbral fm #\m)
-  )
-)
+  (list (estables_aux lista umbral fM #\M)
+        (estables_aux lista umbral fm #\m)))
 
 
 
@@ -196,16 +177,11 @@
 (define (query lista pos op params)
   (cond
     ((= op 1)
-      (umbral_cola (list-ref lista pos) (list-ref params 0) (list-ref params 1))
-    )
+      (umbral_cola (list-ref lista pos) (first params) (second params)))
     ((= op 2)
-      (modsel_cola (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1) ns))
-    )
+      (modsel_cola (list-ref lista pos) (first params) (eval (second params) ns)))
     ((= op 3)
-      (estables (list-ref lista pos) (list-ref params 0) (eval (list-ref params 1) ns) (eval (list-ref params 2) ns))
-    )
-  )
-)
+      (estables (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
 
 
 
