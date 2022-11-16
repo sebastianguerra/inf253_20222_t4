@@ -3,18 +3,27 @@
 
 
 
+;; TODO: representar funciones como funciones matematicas para mayor legibilidad.
+;; TODO: usar cond en vez de if anidados.
+;; TODO: usar let* para evitar let anidados.
+
+
 (define (inverso_aux lista n i)
-  (if (< i n)
-    (if (null? lista)
-      (cons i (inverso_aux lista n (+ i 1)))
-      (if (= i (car lista))
-        (inverso_aux (cdr lista) n (+ i 1))
-        (cons i (inverso_aux lista n (+ i 1)))
-      )
+  (cond
+    ( (>= i n) 
+      '()
     )
-    '()
+    ( (and 
+          (not (null? lista))
+          (= i (car lista)))
+      (inverso_aux (cdr lista) n (+ i 1))
+    )
+    ( else 
+      (cons i (inverso_aux lista n (+ i 1)))
+    )
   )
 )
+
 ;; Recibe una lista de numeros y un numero, y retorna una lista con todos los
 ;; numeros entre 0 y n ([0..N[) que no esten en la lista.
 ;;
@@ -45,41 +54,23 @@
 (define (umbral_simple lista umbral tipo)
   (if (null? lista) 
     '()
-    (let ((res (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo))))
-      (if (eq? tipo #\M)
-        (if (> (car lista) umbral)
-          (cons 0 res)
-          res
-        )
-        (if (< (car lista) umbral)
-          (cons 0 res)
-          res
-        )
-      )
-    )
-  )
-)
+    (let ((res  (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo)))
+          (fn   (if (eq? tipo #\M) > <)));; >w<
+      (if (fn (car lista) umbral)
+        (cons 0 res)
+        res))
 
 
 (define (umbral_cola_aux lista umbral tipo index acc)
   (if (null? lista)
     acc
-    (let ((acc2
-        (if (eq? tipo #\M)
-          (if (> (car lista) umbral)
-            (append acc (list index))
-            acc
-          )
-          (if (< (car lista) umbral)
-            (append acc (list index))
-            acc
-          )
-        )
-      ))
-      (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2)
-    )
-  )
-)
+    (let* ((fn  (if (eq? tipo #\M) > <))
+           (acc2 (if (fn (car lista) umbral)
+                    (append acc (list index))
+                    acc)))
+      (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2))))
+
+
 ;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
 ;; Si el tipo es 'M' retorna una lista con todas las posiciones de los elementos lista que sean mayores que umbral.
 ;; Si es 'm' retorna las posiciones de los que son menores.
