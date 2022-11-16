@@ -111,13 +111,15 @@
 
 
 (define (modsel_cola_aux lista seleccion f i acc)
-  (if (null? lista)
-      acc
-      (if (null? seleccion)
-          (append acc lista)
-          (if (= (car seleccion) i)
-              (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista)))))
-              (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) )))))))
+  (cond
+    ((null? lista)
+      acc)
+    ((null? seleccion)
+      (append acc lista))
+    ((= (car seleccion) i)
+      (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista))))))
+    (else
+      (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) ))))))
 ;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
 ;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
 ;; debe aplicar la funcion f, en caso contrario el numero se matiene igual.
@@ -150,10 +152,10 @@
 
 
 (define (estables_aux lista umbral fn tipo)
-  (length (umbral_cola 
-            (map fn 
-                (map (lambda (x) (list-ref lista x)) 
-                      (umbral_cola lista umbral tipo))) 
+  (length (umbral_cola ;; Obtiene la cantidad de elementos de la lista nueva que cumplen la condicion.
+            (map fn ;; Aplicar la funcion fn a cada elemento de la lista filtrada.
+                 (map (lambda (x) (list-ref lista x)) ;; Convierte la lista de indices en una lista con sus elementos.
+                      (umbral_cola lista umbral tipo))) ;; Todos los elementos que cumplen la condicion.
             umbral 
             tipo)))
 
@@ -185,7 +187,7 @@
     ((= op 2)
       (modsel_cola (list-ref lista pos) (first params) (eval (second params) ns)))
     ((= op 3)
-      (estables (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
+      (estables    (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
 
 
 
@@ -225,9 +227,11 @@
 (display ">(modsel_simple '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2)))\n")
 (display "(1 2 1 3 1 5 0)\n")
 (println (modsel_simple '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2))))
+(println (modsel_cola '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2))))
 (display ">(modsel_simple '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5)))\n")
 (display "(15 7 6 8 27 5 10)\n")
 (display (modsel_simple '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5))))
+(display (modsel_cola '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5))))
 (display "\n")
 
 (display "\n")
