@@ -47,8 +47,8 @@
 (define (umbral_simple lista umbral tipo)
   (if (null? lista) 
     '()
-    (let ((res  (map (lambda (x) (+ x 1)) (umbral_simple (cdr lista) umbral tipo)))
-          (fn   (if (eq? tipo #\M) > <)));; >w<
+    (let ((res   (map  (lambda (x) (+ x 1))  (umbral_simple (cdr lista) umbral tipo)))
+          (fn    (if (eq? tipo #\M) > <)));; >w<
       (if (fn (car lista) umbral)
           (cons 0 res)
           res))))
