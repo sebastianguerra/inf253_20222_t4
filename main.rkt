@@ -92,9 +92,17 @@
     ((null? seleccion) 
       lista)
     ((eq? (car seleccion) 0)
-      (cons (f (car lista)) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1)) (cdr seleccion)) f)))
+      (cons (f (car lista)) 
+            (modsel_simple_aux 
+              (cdr lista) 
+              (map (lambda (x) (- x 1)) (cdr seleccion)) 
+              f)))
     (else
-      (cons (   car lista ) (modsel_simple_aux (cdr lista) (map (lambda (x) (- x 1))      seleccion ) f)))))
+      (cons (   car lista ) 
+            (modsel_simple_aux 
+              (cdr lista) 
+              (map (lambda (x) (- x 1))      seleccion ) 
+              f)))))
 
 
 ;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
