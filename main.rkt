@@ -44,8 +44,6 @@
 
 
 
-
-
 ;; Devuelve una lista con los indices de los elementos de la lista dada que cumplen
 ;; la condicion de ser mayor o menor que el umbral.
 ;;
@@ -104,8 +102,6 @@
     lista 
     (sort seleccion (lambda (x y) (<= x y))) 
     f))
-
-
 
 
 
@@ -180,3 +176,4 @@
       (modsel_cola (list-ref lista pos) (first params) (eval (second params) ns)))
     ((= op 3)
       (estables    (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
+
