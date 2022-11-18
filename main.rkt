@@ -177,3 +177,4 @@
     ((= op 3)
       (estables    (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
 
+
