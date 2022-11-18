@@ -3,11 +3,12 @@
 
 
 
-;; TODO: representar funciones como funciones matematicas para mayor legibilidad.
-;; TODO: usar cond en vez de if anidados.
-;; TODO: usar let* para evitar let anidados.
-
-
+;; Retorna una lista con numeros entre i y n (sin incluir) que no esten en la
+;; lista dada.
+;;
+;; lista: Lista con los numeros que se excluyen del resultado
+;; n: Limite superior del resultado
+;; i: Limite inferior del resultado
 (define (inverso_aux lista n i)
   (cond
     ((>= i n) 
@@ -18,13 +19,6 @@
     (else 
       (cons i (inverso_aux lista n (+ i 1))))))
 
-;; Recibe una lista de numeros y un numero, y retorna una lista con todos los
-;; numeros entre 0 y n ([0..N[) que no esten en la lista.
-;;
-;; [0..N[ - L
-;;
-;; lista: Lista de numeros.
-;; n: Numero que indica el superior.
 (define (inverso lista n)
   (inverso_aux lista n 0))
 
@@ -39,11 +33,6 @@
 
 
 
-;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
-;; Si el tipo es 'M' retorna una lista con todas las posiciones de los elementos lista que sean mayores que umbral.
-;; Si es 'm' retorna las posiciones de los que son menores.
-;;
-;; Esta funcion lo implementa usando recursividad simple.
 (define (umbral_simple lista umbral tipo)
   (if (null? lista) 
     '()
@@ -55,7 +44,14 @@
 
 
 
-
+;; Devuelve una lista con los indices de los elementos de la lista dada que cumplen
+;; la condicion de ser mayor o menor que el umbral.
+;;
+;; lista: Lista de numeros
+;; umbral: Numero que se usa para comparar
+;; tipo: Si es 'M' se usa >, si es 'm' se usa <
+;; index: indice en la lista original del head de la lista dada
+;; acc: Lista donde se acumulan los resultados
 (define (umbral_cola_aux lista umbral tipo index acc)
   (if (null? lista)
       acc
@@ -65,11 +61,6 @@
                         acc)))
         (umbral_cola_aux (cdr lista) umbral tipo (+ index 1) acc2))))
 
-;; Recibe una lista de numeros (lista), un numero (umbral) y un caracter (tipo).
-;; Si el tipo es 'M' retorna una lista con todas las posiciones de los elementos lista que sean mayores que umbral.
-;; Si es 'm' retorna las posiciones de los que son menores.
-;;
-;; Esta funcion lo implementa usando recursion de cola.
 (define (umbral_cola lista umbral tipo)
   (umbral_cola_aux lista umbral tipo 0 '()))
 
@@ -84,7 +75,11 @@
 
 
 
-
+;; Devuelve la lista dada, con los elementos indicados en seleccion modificados por la funcion f.
+;;
+;; lista: Lista con los elementos a modificar
+;; seleccion: Lista con los indices de los elementos a modificar (debe estar ordenada)
+;; f: Funcion que se usa para modificar los elementos
 (define (modsel_simple_aux lista seleccion f)
   (cond
     ((null? lista) 
@@ -105,11 +100,6 @@
               f)))))
 
 
-;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
-;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
-;; debe aplicar la funcion f, en caso contrario el numero se matiene igual.
-;;
-;;Esta funcion lo implementa usando recursion simple.
 (define (modsel_simple lista seleccion f)
   (modsel_simple_aux 
     lista 
@@ -117,7 +107,13 @@
     f))
 
 
-
+;; Devuelve la lista dada, con los elementos indicados en seleccion modificados por la funcion f.
+;;
+;; lista: Lista con los elementos a modificar
+;; seleccion: Lista con los indices de los elementos a modificar (debe estar ordenada)
+;; f: Funcion que se usa para modificar los elementos
+;; i: Indice en la lista original del head de la lista dada
+;; acc: Lista donde se guarda el resultado
 (define (modsel_cola_aux lista seleccion f i acc)
   (cond
     ((null? lista)
@@ -128,11 +124,7 @@
       (modsel_cola_aux (cdr lista) (cdr seleccion) f (+ i 1) (append acc (list (f (car lista))))))
     (else
       (modsel_cola_aux (cdr lista)      seleccion  f (+ i 1) (append acc (list    (car lista) ))))))
-;; Recibe dos listas de numeros (lista y seleccion) y una funcion lambda (f).
-;; Por cada numero en la lista, si su indice esta en seleccion entonces se le
-;; debe aplicar la funcion f, en caso contrario el numero se matiene igual.
-;;
-;;Esta funcion lo implementa usando recursion de cola.
+
 (define (modsel_cola lista seleccion f)
   (modsel_cola_aux 
     lista 
@@ -158,7 +150,13 @@
 
 
 
-
+;; Devuelve la cantidad de numeros de la lista que son menores o mayores que el umbral,
+;; y que al aplicarles la funcion f, el resultado sigue siendo menor o mayor segun el tipo dado.
+;;
+;; lista: Lista de numeros
+;; umbral: Numero que se usa para comparar
+;; fn: Funcion que se usa para modificar los elementos
+;; tipo: Si es 'M' se usa >, si es 'm' se usa <
 (define (estables_aux lista umbral fn tipo)
   (length (umbral_cola ;; Obtiene la cantidad de elementos de la lista nueva que cumplen la condicion.
             (map fn ;; Aplicar la funcion fn a cada elemento de la lista filtrada.
