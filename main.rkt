@@ -3,6 +3,8 @@
 
 
 
+
+
 ;; Retorna una lista con numeros entre i y n (sin incluir) que no esten en la
 ;; lista dada.
 ;;
@@ -31,8 +33,6 @@
 
 
 
-
-
 (define (umbral_simple lista umbral tipo)
   (if (null? lista) 
     '()
@@ -41,6 +41,8 @@
       (if (fn (car lista) umbral)
           (cons 0 res)
           res))))
+
+
 
 
 
@@ -63,8 +65,6 @@
 
 (define (umbral_cola lista umbral tipo)
   (umbral_cola_aux lista umbral tipo 0 '()))
-
-
 
 
 
@@ -99,12 +99,14 @@
               (map (lambda (x) (- x 1))      seleccion ) 
               f)))))
 
-
 (define (modsel_simple lista seleccion f)
   (modsel_simple_aux 
     lista 
     (sort seleccion (lambda (x y) (<= x y))) 
     f))
+
+
+
 
 
 ;; Devuelve la lista dada, con los elementos indicados en seleccion modificados por la funcion f.
@@ -132,14 +134,6 @@
     f 
     0 
     '()))
-
-
-
-
-
-
-
-
 
 
 
@@ -178,14 +172,6 @@
 
 
 
-
-
-
-
-
-
-
-
 (define (query lista pos op params)
   (cond
     ((= op 1)
@@ -194,71 +180,3 @@
       (modsel_cola (list-ref lista pos) (first params) (eval (second params) ns)))
     ((= op 3)
       (estables    (list-ref lista pos) (first params) (eval (second params) ns) (eval (third params) ns)))))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(display "\n")
-;; 1. Inverso
-(display ">(inverso '(1 3 7) 10)\n")
-(display "(0 2 4 5 6 8 9)\n")
-(display (inverso '(1 3 7) 10))
-(display "\n")
-
-(display "\n")
-;; 2. Umbral
-(display ">(umbral_simple '(15 2 1 3 27 5 10) 5 #\\M)\n")
-(display "(0 4 6)\n")
-(display (umbral_simple '(15 2 1 3 27 5 10) 5 #\M))
-(display "\n")
-(display ">(umbral_cola '(15 2 1 3 27 5 10) 5 #\\m)\n")
-(display "(1 2 3)\n")
-(display (umbral_cola '(15 2 1 3 27 5 10) 5 #\m))
-(display "\n")
-
-(display "\n")
-;; 3. Modificar seleccionados
-(display ">(modsel_simple '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2)))\n")
-(display "(1 2 1 3 1 5 0)\n")
-(println (modsel_simple '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2))))
-(println (modsel_cola '(15 2 1 3 27 5 10) '(0 4 6) (lambda (x) (modulo x 2))))
-(display ">(modsel_simple '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5)))\n")
-(display "(15 7 6 8 27 5 10)\n")
-(display (modsel_simple '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5))))
-(display (modsel_cola '(15 2 1 3 27 5 10) '(3 1 2) (lambda (x) (+ x 5))))
-(display "\n")
-
-(display "\n")
-;; 4. Estables
-(display ">(estables '(15 2 1 3 27 5 10) 5 (lambda (x) (/ x 2)) (lambda (x) (* x 2))\n")
-(display "(2 1)\n")
-(display (estables '(15 2 1 3 27 5 10) 5 (lambda (x) (/ x 2)) (lambda (x) (* x 2))))
-(display "\n")
-
-(display "\n")
-;; 5. Query
-(display ">(query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 1 1 '(1 #\\M))\n")
-(display "(0 1 2)\n")
-(display (query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 1 1 '(1 #\M)))
-(display "\n")
-(display ">(query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 0 2 '((0 4) (lambda (x) (+ x 100))))\n")
-(display "(100 1 2 3 104)\n")
-(display (query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 0 2 '((0 4) (lambda (x) (+ x 100)))))
-(display "\n")
-(display ">(query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 2 3 '(5 (lambda (x) (/ x 2)) (lambda (x) (* x 2))))\n")
-(display "(2 1)\n")
-(display (query '((0 1 2 3 4) (4 3 2 1 0) (15 2 1 3 27 5 10)) 2 3 '(5 (lambda (x) (/ x 2)) (lambda (x) (* x 2)))))
-(display "\n")
-
